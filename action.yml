@@ -5,10 +5,19 @@ branding:
   icon: git-merge
   color: black
 
+outputs:
+  name:
+    value: ${{steps.guard.outputs.name}}
+  version:
+    value: ${{steps.guard.outputs.version}}
+  increased:
+    value: ${{steps.guard.outputs.increased}}
+
 runs:
   using: 'composite'
   steps:
-    - run: |
+    - id: guard
+      run: |
         package_name=$(jq -r '.name' package.json)
         echo "Package name: $package_name"
         echo "name=${package_name}" >> $GITHUB_OUTPUT
