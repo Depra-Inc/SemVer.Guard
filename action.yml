@@ -19,11 +19,11 @@ runs:
         latest_version=$(npm info ${package_name} version 2>/dev/null || echo "nonexistent")
         echo "Latest version: $latest_version"
 
-        if ["$latest_version" = "nonexistent"]; then
+        if [ "$latest_version" = "nonexistent" ]; then
           echo "Package does not exist on npm. Return new version."
           echo "increased=true" >> $GITHUB_OUTPUT
           echo "version=${commit_version}" >> $GITHUB_OUTPUT
-        elif ["$latest_version" \> "$commit_version"] || ["$latest_version" = "$commit_version"]; then
+        elif [ "$latest_version" \> "$commit_version" ] || [ "$latest_version" = "$commit_version" ]; then
           echo "Version must be greater than ${latest_version}! Stopping job."
           echo "increased=false" >> $GITHUB_OUTPUT
         else
