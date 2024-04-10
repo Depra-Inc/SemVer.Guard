@@ -32,12 +32,12 @@ runs:
           echo "Package does not exist on npm. Return new version."
           echo "increased=true" >> $GITHUB_OUTPUT
           echo "version=${commit_version}" >> $GITHUB_OUTPUT
-        elif [ "$latest_version" \> "$commit_version" ] || [ "$latest_version" = "$commit_version" ]; then
-          echo "Version must be greater than ${latest_version}! Stopping job."
-          echo "increased=false" >> $GITHUB_OUTPUT
-        else
+        elif [ "$(vercmp "$commit_version" "$latest_version")" -gt 0 ]; then
           echo "Version updated!"
           echo "increased=true" >> $GITHUB_OUTPUT
           echo "version=${commit_version}" >> $GITHUB_OUTPUT
+        else
+          echo "Version must be greater than ${latest_version}! Stopping job."
+          echo "increased=false" >> $GITHUB_OUTPUT
         fi
       shell: bash
