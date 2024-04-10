@@ -32,7 +32,7 @@ runs:
           echo "Package does not exist on npm. Return new version."
           echo "increased=true" >> $GITHUB_OUTPUT
           echo "version=${commit_version}" >> $GITHUB_OUTPUT
-        elif ! npx semver -r ">${latest_version}" "${commit_version}" &>/dev/null; then
+        elif [ "$(npx semver compare $commit_version $latest_version)" -le 0 ]; then
           echo "Version must be greater than ${latest_version}! Stopping job."
           echo "increased=false" >> $GITHUB_OUTPUT
         else
