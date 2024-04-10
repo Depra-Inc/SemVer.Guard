@@ -18,6 +18,8 @@ runs:
   steps:
     - id: guard
       run: |
+        npm install semver
+
         package_name=$(jq -r '.name' package.json)
         echo "Package name: $package_name"
         echo "name=${package_name}" >> $GITHUB_OUTPUT
@@ -32,12 +34,12 @@ runs:
           echo "Package does not exist on npm. Return new version."
           echo "increased=true" >> $GITHUB_OUTPUT
           echo "version=${commit_version}" >> $GITHUB_OUTPUT
-        elif [ "$(vercmp "$commit_version" "$latest_version")" -gt 0 ]; then
+        elif [ "$(node -e "process.stdout.write(require('semver').gt('${commit_version}', '${latest_version}'))")" = "true" ]; then
+          echo "Version must be greater than ${latest_version}! Stopping job."
+          echo "increased=false" >> $GITHUB_OUTPUT
+        else
           echo "Version updated!"
           echo "increased=true" >> $GITHUB_OUTPUT
           echo "version=${commit_version}" >> $GITHUB_OUTPUT
-        else
-          echo "Version must be greater than ${latest_version}! Stopping job."
-          echo "increased=false" >> $GITHUB_OUTPUT
         fi
       shell: bash
